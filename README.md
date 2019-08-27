@@ -111,6 +111,9 @@ POST  http://localhost:8080/account/101/transfer/102/500
 # Things to Note
 * Integration test is written in IntegrationTests.java file.
 * At the start of the app we will already have 2 account with positive balance
+
+GET on http://localhost:8080/account/101/statement
+
 ```json
 {
     "account_id": 101,
@@ -120,7 +123,7 @@ POST  http://localhost:8080/account/101/transfer/102/500
     "transactions": []
 }
 ```
-
+GET on http://localhost:8080/account/102/statement
 ```json
 {
     "account_id": 102,
@@ -130,10 +133,7 @@ POST  http://localhost:8080/account/101/transfer/102/500
     "transactions": []
 }
 ```
-  The above accounts could be used to play around.
-
-
-
+  The above accounts could be used to do transactions upon.
 
 
 
