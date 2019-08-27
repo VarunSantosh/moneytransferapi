@@ -1,0 +1,73 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.7.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
+	id 'jacoco'
+}
+
+group = 'com.monese'
+version = '1.0.0'
+sourceCompatibility = '1.8'
+
+repositories {
+	jcenter()
+	mavenLocal()
+	mavenCentral()
+}
+
+dependencies {
+	// web and JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	// lombok
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+
+	// unit testing
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
+	testImplementation 'org.assertj:assertj-core:2.6.0'
+	testImplementation "org.mockito:mockito-core:2.21.0"
+	testImplementation 'org.mockito:mockito-junit-jupiter:2.23.0'
+}
+
+jacoco {
+	toolVersion = "0.8.4"
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled false
+		csv.enabled false
+		html.enabled true
+		afterEvaluate {
+			classDirectories.from = (classDirectories.files.collect {
+				fileTree(dir: it, exclude: 'com/monese/moneytransferapi/MoneyTransferApiApplication.class')
+			})
+		}
+	}
+}
+
+jacocoTestCoverageVerification {
+	afterEvaluate {
+		classDirectories.from = (classDirectories.files.collect {
+			fileTree(dir: it, exclude: 'com/monese/moneytransferapi/MoneyTransferApiApplication.class')
+		})
+	}
+	violationRules {
+		rule {
+			limit {
+				minimum = 1.0
+			}
+		}
+	}
+}
+
+test.finalizedBy jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification
+
+test {
+	useJUnitPlatform()
+}
