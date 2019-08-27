@@ -2,7 +2,7 @@
 # MonetTransferAPI
 A simple Rest API for money transfers between accounts.
 
-##Tech Stack
+## Tech Stack
 
 * **Java 8** - programming language
 * **SpringBoot** - framework used
