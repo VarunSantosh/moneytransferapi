@@ -103,12 +103,23 @@ class AccountControllerTest {
      * This test is to check for transfer of money failure because of insufficient balance in source account
      */
     @Test
-    void testTransferMoneyResponseToBe400_BAD_REQUEST() {
+    void testTransferMoneyResponseToBe400_BAD_REQUEST_ForInsufficientBalance() {
 
         when(mockAccountService.transfer(101L, 102L, new BigDecimal(500))).thenThrow(new InsufficientBalanceException("Account with account id: '101' doesn't have sufficient balance for the transfer."));
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> controller.transferMoney(101L, 102L, new BigDecimal(500)));
         verify(mockAccountService, times(1)).transfer(101L, 102L, new BigDecimal(500));
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
+    }
+
+    /**
+     * This test is to check for transfer of money failure because source and destination account is same
+     */
+    @Test
+    void testTransferMoneyResponseToBe400_BAD_REQUEST_ForToAndFromAccountsToBeSame() {
+
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> controller.transferMoney(101L, 101L, new BigDecimal(500)));
+        verify(mockAccountService, times(0)).transfer(101L, 101L, new BigDecimal(500));
         assertEquals(HttpStatus.BAD_REQUEST, ex.getStatus());
     }
 }

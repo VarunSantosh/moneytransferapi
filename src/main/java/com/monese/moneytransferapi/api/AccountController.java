@@ -9,15 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 
 @RestController
+@RequestMapping("/v1")
 public class AccountController {
 
     private static Logger log = LoggerFactory.getLogger(AccountController.class);
@@ -34,7 +33,7 @@ public class AccountController {
      * @return return 200OK if found else return 400 NOT FOUND
      */
     @GetMapping("/account/{id}/statement")
-    public ResponseEntity<Account> accountStatement(@PathVariable("id") Long accountId) {
+    public ResponseEntity<Account> accountStatement(@Valid @PathVariable("id") Long accountId) {
 
         log.info("Account statement requested for account id: {}", accountId);
         try {
@@ -54,18 +53,19 @@ public class AccountController {
      * @return              return 201 for successful transfer
      */
     @PostMapping("/account/{from}/transfer/{to}/{amount}")
-    public ResponseEntity<AccountTransferPair> transferMoney(@PathVariable("from") Long fromAccountId, @PathVariable("to") Long toAccountId, @PathVariable("amount") BigDecimal amount) {
+    public ResponseEntity<AccountTransferPair> transferMoney(@Valid @PathVariable(value = "from") Long fromAccountId, @Valid @PathVariable("to") Long toAccountId, @Valid @PathVariable("amount") BigDecimal amount) {
 
         log.info("Money transfer requested from account id: '{}' to account id: '{}' for amount: '{}'.", fromAccountId, toAccountId, amount);
+        if(fromAccountId.equals(toAccountId)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Both from and to account ids are same");
         try {
             AccountTransferPair result = accountService.transfer(fromAccountId, toAccountId, amount);
             return new ResponseEntity<>(result, HttpStatus.CREATED);
         } catch(AccountNotFoundException ex) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, ex.getMessage(), ex);
+                    HttpStatus.NOT_FOUND, ex.getMessage());
         } catch(InsufficientBalanceException ex) {
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+                    HttpStatus.BAD_REQUEST, ex.getMessage());
         }
     }
 }

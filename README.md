@@ -54,7 +54,7 @@ open the file in browser of your choice
 ```
 - GET    /v1/ping - to check the health of the app
 - GET    /v1/account/{id}/statement - get the account statement
-- POST   /v1/account/{fromAccount}/transfer/{toAccount}/{amount} - transfer money between accounts
+- POST   /v1/account/{from}/transfer/{to}/{amount} - transfer money between accounts
 ```
 
 ## Account Resources
@@ -94,7 +94,7 @@ GET  http://localhost:8080/v1/account/101/statement
 ###### Request
 
 ```
-POST  http://localhost:8080/account/101/transfer/102/500
+POST  http://localhost:8080/v1/account/101/transfer/102/500
 ```
 
 ###### Response
@@ -112,7 +112,7 @@ POST  http://localhost:8080/account/101/transfer/102/500
 * Integration test is written in IntegrationTests.java file.
 * At the start of the app we will already have 2 account with positive balance
 
-GET on http://localhost:8080/account/101/statement
+GET on http://localhost:8080/v1/account/101/statement
 
 ```json
 {
@@ -123,7 +123,7 @@ GET on http://localhost:8080/account/101/statement
     "transactions": []
 }
 ```
-GET on http://localhost:8080/account/102/statement
+GET on http://localhost:8080/v1/account/102/statement
 ```json
 {
     "account_id": 102,

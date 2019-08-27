@@ -25,7 +25,7 @@ class IntegrationTests {
 	 */
 	@Test
 	void testAccountStatementApi() {
-		this.webClient.get().uri("/account/1/statement").exchange()
+		this.webClient.get().uri("/v1/account/1/statement").exchange()
 				.expectStatus().isOk()
 				.expectBody(Account.class)
 				.consumeWith(response ->
@@ -44,7 +44,7 @@ class IntegrationTests {
 	 */
 	@Test
 	void testTransferApi() {
-		this.webClient.post().uri("/account/1/transfer/2/500").exchange()
+		this.webClient.post().uri("/v1/account/1/transfer/2/500").exchange()
 				.expectStatus().isCreated()
 				.expectBody(AccountTransferPair.class)
 				.consumeWith(response ->
@@ -56,7 +56,7 @@ class IntegrationTests {
 					Assert.assertThat(response.getResponseBody().getAmount(), Matchers.comparesEqualTo(new BigDecimal(500.00)));
 				});
 
-		this.webClient.get().uri("/account/1/statement").exchange()
+		this.webClient.get().uri("/v1/account/1/statement").exchange()
 				.expectStatus().isOk()
 				.expectBody(Account.class)
 				.consumeWith(response ->
@@ -69,7 +69,7 @@ class IntegrationTests {
 					Assert.assertEquals(response.getResponseBody().getTransactions().size(), 1);
 				});
 
-		this.webClient.get().uri("/account/2/statement").exchange()
+		this.webClient.get().uri("/v1/account/2/statement").exchange()
 				.expectStatus().isOk()
 				.expectBody(Account.class)
 				.consumeWith(response ->
@@ -88,7 +88,7 @@ class IntegrationTests {
 	 */
 	@Test
 	void testTransferApiToFail() {
-		this.webClient.post().uri("/account/1/transfer/2/6000").exchange()
+		this.webClient.post().uri("/v1/account/1/transfer/2/6000").exchange()
 				.expectStatus().isBadRequest();
 	}
 }
